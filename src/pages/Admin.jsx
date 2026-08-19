@@ -1,31 +1,41 @@
 import { useEffect, useState } from "react";
 import "./../styles/Admin.css";
+
+const API_URL = "https://proshine252demo.onrender.com";
+
 function Admin() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const loadBookings = async () => {
+    setLoading(true);
+
     try {
-      const response = await fetch(
-        "http://localhost:5000/admin/bookings"
-      );
+      const response = await fetch(`${API_URL}/admin/bookings`);
       const data = await response.json();
+
       if (data.success) {
         setBookings(data.bookings);
+      } else {
+        alert(data.message || "Could not load bookings");
       }
     } catch (error) {
       console.error("Failed to load bookings:", error);
+      alert("Could not connect to server");
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     loadBookings();
   }, []);
+
   // UPDATE STATUS
   const updateStatus = async (id, status) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/admin/bookings/${id}`,
+        `${API_URL}/admin/bookings/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -34,7 +44,9 @@ function Admin() {
           body: JSON.stringify({ status }),
         }
       );
+
       const data = await response.json();
+
       if (data.success) {
         setBookings((currentBookings) =>
           currentBookings.map((booking) =>
@@ -51,22 +63,27 @@ function Admin() {
       alert("Could not connect to server");
     }
   };
+
   // DELETE BOOKING
   const deleteBooking = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this booking?"
     );
+
     if (!confirmDelete) {
       return;
     }
+
     try {
       const response = await fetch(
-        `http://localhost:5000/admin/bookings/${id}`,
+        `${API_URL}/admin/bookings/${id}`,
         {
           method: "DELETE",
         }
       );
+
       const data = await response.json();
+
       if (data.success) {
         setBookings((currentBookings) =>
           currentBookings.filter(
@@ -81,6 +98,7 @@ function Admin() {
       alert("Could not connect to server");
     }
   };
+
   return (
     <div className="admin-page">
       <div className="admin-header">
@@ -88,6 +106,7 @@ function Admin() {
           <h1>PRO SHINE</h1>
           <p>Admin Dashboard</p>
         </div>
+
         <button
           className="refresh-btn"
           onClick={loadBookings}
@@ -95,6 +114,7 @@ function Admin() {
           🔄 Refresh
         </button>
       </div>
+
       <div className="admin-content">
         <div className="admin-title">
           <div>
@@ -104,6 +124,7 @@ function Admin() {
             </p>
           </div>
         </div>
+
         {loading ? (
           <p>Loading bookings...</p>
         ) : bookings.length === 0 ? (
@@ -121,10 +142,12 @@ function Admin() {
                       <h3>
                         {booking.name || "Customer"}
                       </h3>
+
                       <p className="service-name">
                         🧽 {booking.package}
                       </p>
                     </div>
+
                     <span
                       className={`booking-status ${(
                         booking.status || "Pending"
@@ -133,36 +156,43 @@ function Admin() {
                       {booking.status || "Pending"}
                     </span>
                   </div>
+
                   <div className="booking-info">
                     <p>
                       📞 <strong>Phone:</strong>{" "}
                       {booking.phone || "Not provided"}
                     </p>
+
                     <p>
                       🚗 <strong>Car:</strong>{" "}
                       {booking.carModel || "Not provided"}
                     </p>
+
                     <p>
                       📅 <strong>Date:</strong>{" "}
                       {booking.date || "Not selected"}
                     </p>
+
                     <p>
                       🕐 <strong>Time:</strong>{" "}
                       {booking.time || "Not selected"}
                     </p>
                   </div>
+
                   {booking.message && (
                     <div className="booking-message">
                       <strong>📝 Message:</strong>
                       <p>{booking.message}</p>
                     </div>
                   )}
+
                   <p className="booking-created">
                     Booked on:{" "}
                     {new Date(
                       booking.createdAt
                     ).toLocaleString()}
                   </p>
+
                   <div className="booking-actions">
                     <button
                       className="status-btn pending-btn"
@@ -175,6 +205,7 @@ function Admin() {
                     >
                       Pending
                     </button>
+
                     <button
                       className="status-btn confirmed-btn"
                       onClick={() =>
@@ -186,6 +217,7 @@ function Admin() {
                     >
                       Confirmed
                     </button>
+
                     <button
                       className="status-btn completed-btn"
                       onClick={() =>
@@ -197,6 +229,7 @@ function Admin() {
                     >
                       Completed
                     </button>
+
                     <button
                       className="status-btn cancelled-btn"
                       onClick={() =>
@@ -208,6 +241,7 @@ function Admin() {
                     >
                       Cancelled
                     </button>
+
                     <button
                       className="delete-btn"
                       onClick={() =>
@@ -226,4 +260,5 @@ function Admin() {
     </div>
   );
 }
+
 export default Admin;
