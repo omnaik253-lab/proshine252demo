@@ -8,11 +8,13 @@ import Booking from "./components/Booking";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Admin from "./pages/Admin";
+
 function App() {
-  // Open Admin Dashboard
-  if (window.location.pathname === "/admin") {
+  // Open Admin Dashboard using #admin
+  if (window.location.hash === "#admin") {
     return <Admin />;
   }
+
   // Normal Pro Shine Website
   return (
     <>
@@ -28,4 +30,5 @@ function App() {
     </>
   );
 }
+
 export default App;
