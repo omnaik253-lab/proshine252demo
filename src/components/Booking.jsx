@@ -1,9 +1,13 @@
 import "./../styles/Booking.css";
+
 function Booking() {
   const today = new Date().toISOString().split("T")[0];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const form = e.target;
+
     const bookingData = {
       name: form.name.value,
       phone: form.phone.value,
@@ -13,31 +17,39 @@ function Booking() {
       time: form.time.value,
       message: form.message.value,
     };
+
     try {
-      const response = await fetch("http://localhost:5000/booking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bookingData),
-      });
+      const response = await fetch(
+        "https://proshine252demo.onrender.com/booking",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
+
       const data = await response.json();
-      if (data.success) {
-        alert("✅ Appointment booked successfully!");
+
+      if (response.ok) {
+        alert("Booking submitted successfully!");
         form.reset();
       } else {
-        alert(data.message || "Booking failed");
+        alert(data.message || "Booking failed!");
       }
     } catch (error) {
-      console.error("Booking error:", error);
-      alert("❌ Cannot connect to booking server.");
+      console.error(error);
+      alert("Cannot connect to booking system.");
     }
   };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
       e.preventDefault();
     }
   };
+
   return (
     <section id="booking" className="booking">
       <div className="booking-title">
@@ -47,13 +59,13 @@ function Booking() {
           Fill in your details and choose the service you need.
         </p>
       </div>
+
       <div className="booking-container">
         <form
           className="booking-form"
           onSubmit={handleSubmit}
           onKeyDown={handleKeyDown}
         >
-          {/* FULL NAME */}
           <div className="form-group">
             <label>Full Name</label>
             <input
@@ -63,7 +75,7 @@ function Booking() {
               required
             />
           </div>
-          {/* PHONE */}
+
           <div className="form-group">
             <label>Phone Number</label>
             <input
@@ -76,7 +88,7 @@ function Booking() {
               required
             />
           </div>
-          {/* CAR MODEL */}
+
           <div className="form-group">
             <label>Car Model</label>
             <input
@@ -86,14 +98,10 @@ function Booking() {
               required
             />
           </div>
-          {/* SERVICE */}
+
           <div className="form-group">
             <label>Select Service</label>
-            <select
-              name="service"
-              required
-              defaultValue=""
-            >
+            <select name="service" required defaultValue="">
               <option value="" disabled>
                 Choose a service
               </option>
@@ -102,22 +110,9 @@ function Booking() {
               <option>Ceramic Coating</option>
               <option>PPF Protection</option>
               <option>Interior Detailing</option>
-              <option>Auto Detailing</option>
-              <option>Car Waxing</option>
-              <option>Engine Detailing</option>
-              <option>Full Body Wash</option>
-              <option>Headlight Polishing</option>
-              <option>Vehicle Interior Vacuuming</option>
-              <option>Paint Repair</option>
-              <option>Seat Shampooing</option>
-              <option>Steam Cleaning</option>
-              <option>Interior Sanitising</option>
-              <option>Professional Wash</option>
-              <option>Super Bike Detailing</option>
-              <option>Polishing</option>
             </select>
           </div>
-          {/* DATE + TIME */}
+
           <div className="form-row">
             <div className="form-group">
               <label>Preferred Date</label>
@@ -128,13 +123,10 @@ function Booking() {
                 required
               />
             </div>
+
             <div className="form-group">
               <label>Preferred Time</label>
-              <select
-                name="time"
-                required
-                defaultValue=""
-              >
+              <select name="time" required defaultValue="">
                 <option value="" disabled>
                   Choose a time
                 </option>
@@ -161,25 +153,17 @@ function Booking() {
               </select>
             </div>
           </div>
-          {/* OPTIONAL MESSAGE */}
+
           <div className="form-group">
-            <label>
-              Additional Message
-              <span style={{ color: "#888", fontWeight: "normal" }}>
-                {" "} (Optional)
-              </span>
-            </label>
+            <label>Additional Message</label>
             <textarea
               name="message"
               placeholder="Anything we should know?"
               rows="4"
             ></textarea>
           </div>
-          {/* SUBMIT */}
-          <button
-            type="submit"
-            className="booking-btn"
-          >
+
+          <button type="submit" className="booking-btn">
             Book Appointment
           </button>
         </form>
@@ -187,4 +171,5 @@ function Booking() {
     </section>
   );
 }
+
 export default Booking;
